@@ -12,6 +12,18 @@
 }
 else
 {
+
+<EditForm Model="@coordinates" OnValidSubmit="@GetGeoForecast">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <InputNumber id="lat" @bind-Value="coordinates.lat" />
+    <InputNumber id="longitude" @bind-Value="coordinates.longitude" />
+
+    <button type="submit">Submit</button>
+</EditForm>
+
+
     <table class="table">
         <thead>
             <tr>
@@ -37,10 +49,22 @@ else
 
 @code {
     private WeatherForecast[] forecasts;
+    private Coordinates coordinates = new Coordinates();
 
     protected override async Task OnInitializedAsync()
     {
         forecasts = await Http.GetFromJsonAsync<WeatherForecast[]>("WeatherForecast");
+    }
+
+    private async void GetGeoForecast()
+    {
+        forecasts = await Http.GetFromJsonAsync<WeatherForecast[]>("WeatherForecast/"+coordinates.lat+"/"+coordinates.longitude);
+    }
+
+    private class Coordinates
+    {
+        public double lat;
+        public double longitude;
     }
 
 }

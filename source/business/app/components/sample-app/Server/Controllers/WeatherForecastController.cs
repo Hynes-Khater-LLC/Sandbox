@@ -60,5 +60,44 @@ namespace sample_app.Server.Controllers
             }
 
         }
+
+        [HttpGet("{lat}/{longitude}")]
+        public async Task<IEnumerable<Shared.WeatherForecast>> GetAsync(double lat, double longitude)
+        {
+            try
+            {
+
+
+                sampleApi.Client client = new sampleApi.Client("https://localhost:44304", new HttpClient());
+
+                ICollection<sampleApi.WeatherForecast> forecasts = null;
+
+                forecasts = await client.WeatherForecastAsync(lat, longitude);
+
+
+                List<Shared.WeatherForecast> retCollection = new List<Shared.WeatherForecast>();
+
+                foreach (sampleApi.WeatherForecast forecast in forecasts)
+                {
+                    Shared.WeatherForecast retData = new Shared.WeatherForecast();
+
+                    retData.Date = forecast.Date.DateTime;
+                    retData.TemperatureC = forecast.TemperatureC;
+                    retData.Summary = forecast.Summary;
+
+                    retCollection.Add(retData);
+                }
+
+
+                return retCollection;
+
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+
+        }
     }
 }

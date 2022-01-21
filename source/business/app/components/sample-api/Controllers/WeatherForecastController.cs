@@ -92,5 +92,66 @@ namespace sample_api.Controllers
 
 
         }
+
+        [HttpGet ("{lat}/{longitude}")]
+        public IEnumerable<WeatherForecast> GetWithLocation(double lat, double longitude)
+        {
+            //var rng = new Random();
+            //return Enumerable.Range(1, 5).Select(index => new WeatherForecast
+            //{
+            //    Date = DateTime.Now.AddDays(index),
+            //    TemperatureC = rng.Next(-20, 55),
+            //    Summary = Summaries[rng.Next(Summaries.Length)]
+            //})
+            //.ToArray();
+
+            // see = "https://docs.microsoft.com/en-us/rest/api/maps/weather/get-daily-forecast"
+            string url = $"https://atlas.microsoft.com/weather/forecast/daily/json?api-version=1.0&query=" + lat + "%2C"+ longitude +"&duration=5&subscription-key=IspvfmeOHOjnFlLoaOie3B8b-eDjACwyG_0SnNHMMjQ";
+
+            var client = new RestClient(url);
+
+            var request = new RestRequest(Method.GET);
+
+            request.AddHeader("cache-control", "no-cache");
+
+            request.AddHeader("x-ms-client-id", "be56900c-69ed-4902-9f56-99af97bafdde");
+
+            IRestResponse response = client.Execute(request);
+
+            List<WeatherForecast> forecasts = new List<WeatherForecast>();
+
+            if (response.IsSuccessful)
+            {
+                string content = response.Content;
+
+                Root weatherObjects = JsonConvert.DeserializeObject<Root>(content);
+
+                List<Forecast> mapForecasts = weatherObjects.forecasts;
+
+                if (mapForecasts != null)
+                {
+                    foreach (Forecast forecast in mapForecasts)
+                    {
+                        WeatherForecast data = new WeatherForecast();
+
+                        data.Date = forecast.date;
+
+                        double temp = forecast.temperature.maximum.value;
+
+                        data.TemperatureC = (int)temp;
+
+                        string windStatement = "Winds of " + forecast.day.wind.speed.value + forecast.day.wind.speed.unit;
+
+                        data.Summary = (forecast.day.hasPrecipitation) ? windStatement + " with a " + forecast.day.precipitationProbability + "% chance of " + forecast.day.precipitationType + "." : windStatement + " with no precipitation.";
+
+                        forecasts.Add(data);
+                    }
+
+
+                }
+
+            }
+            return forecasts;
+        }
     }
 }
