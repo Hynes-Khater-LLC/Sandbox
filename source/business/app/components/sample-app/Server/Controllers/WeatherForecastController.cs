@@ -29,7 +29,7 @@ namespace sample_app.Server.Controllers
             {
 
 
-                sampleApi.Client client = new sampleApi.Client("http://localhost:5000", new HttpClient());
+                sampleApi.Client client = new sampleApi.Client("https://localhost:44304", new HttpClient());
 
                 ICollection<sampleApi.WeatherForecast> forecasts = null;
 
