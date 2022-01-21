@@ -73,7 +73,10 @@ namespace sample_api.Controllers
                         double temp = forecast.temperature.maximum.value;
 
                         data.TemperatureC = (int)temp;
-                        data.Summary = "";
+                       
+                        string windStatement = "Winds of " + forecast.day.wind.speed.value + forecast.day.wind.speed.unit;
+                        
+                        data.Summary = (forecast.day.hasPrecipitation) ? windStatement + " with a " + forecast.day.precipitationProbability + "% chance of " + forecast.day.precipitationType + ".": windStatement + " with no precipitation.";
 
                         forecasts.Add(data);
                     }
