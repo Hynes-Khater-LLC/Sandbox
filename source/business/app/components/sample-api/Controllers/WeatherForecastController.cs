@@ -40,7 +40,7 @@ namespace sample_api.Controllers
             //.ToArray();
 
 
-            string url = $"https://atlas.microsoft.com/weather/forecast/daily/json?api-version=1.0&query=29.76328%2C-95.36327&duration=5&subscription-key=IspvfmeOHOjnFlLoaOie3B8b-eDjACwyG_0SnNHMMjQ";
+            string url = $"https://atlas.microsoft.com/weather/forecast/daily/json?api-version=1.0&query=44.9778%2C93.2650&duration=5&subscription-key=IspvfmeOHOjnFlLoaOie3B8b-eDjACwyG_0SnNHMMjQ";
 
             var client = new RestClient(url);
 
@@ -72,8 +72,13 @@ namespace sample_api.Controllers
 
                         double temp = forecast.temperature.maximum.value;
 
+                        double temp1 = forecast.realFeelTemperature.maximum.value;
+
                         data.TemperatureC = (int)temp;
+                      
                         data.Summary = "";
+
+                        data.TemperatureFeelsLikeC = (int)temp1;
 
                         forecasts.Add(data);
                     }
