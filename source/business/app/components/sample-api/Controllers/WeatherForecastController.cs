@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-
+using Darnton.Blazor.DeviceInterop.Geolocation;
 using RestSharp;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
@@ -27,8 +27,8 @@ namespace sample_api.Controllers
             _logger = logger;
         }
 
-        [HttpGet]
-        public IEnumerable<WeatherForecast> Get()
+        [HttpGet("{cord}")]
+        public async Task<IEnumerable<WeatherForecast>> GetAsync(string cord)
         {
             //var rng = new Random();
             //return Enumerable.Range(1, 5).Select(index => new WeatherForecast
@@ -39,9 +39,9 @@ namespace sample_api.Controllers
             //})
             //.ToArray();
 
-
-            string url = $"https://atlas.microsoft.com/weather/forecast/daily/json?api-version=1.0&query=29.76328%2C-95.36327&duration=5&subscription-key=IspvfmeOHOjnFlLoaOie3B8b-eDjACwyG_0SnNHMMjQ";
-
+            // 30.266666,-97.733330
+            //string url = $"https://atlas.microsoft.com/weather/forecast/daily/json?api-version=1.0&query=29.76328%2C-95.36327&duration=5&subscription-key=IspvfmeOHOjnFlLoaOie3B8b-eDjACwyG_0SnNHMMjQ";
+            string url = $"https://atlas.microsoft.com/weather/forecast/daily/json?api-version=1.0&query=" +cord+ "&duration=5&subscription-key=IspvfmeOHOjnFlLoaOie3B8b-eDjACwyG_0SnNHMMjQ";
             var client = new RestClient(url);
 
             var request = new RestRequest(Method.GET);
@@ -73,7 +73,7 @@ namespace sample_api.Controllers
                         double temp = forecast.temperature.maximum.value;
 
                         data.TemperatureC = (int)temp;
-                        data.Summary = "";
+                        data.Summary = forecast.day.longPhrase;
 
                         forecasts.Add(data);
                     }

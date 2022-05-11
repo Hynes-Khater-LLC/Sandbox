@@ -9,9 +9,13 @@
 @if (forecasts == null)
 {
     <p><em>Loading...</em></p>
+    <div>
+        <button @onclick="getAustinCord">Austin</button>
+    </div>
 }
 else
 {
+
     <table class="table">
         <thead>
             <tr>
@@ -33,14 +37,22 @@ else
             }
         </tbody>
     </table>
+
 }
 
 @code {
     private WeatherForecast[] forecasts;
 
+    private string? cordinates;
+
     protected override async Task OnInitializedAsync()
     {
-        forecasts = await Http.GetFromJsonAsync<WeatherForecast[]>("WeatherForecast");
+        //forecasts = await Http.GetFromJsonAsync<WeatherForecast[]>("api/WeatherForecast/get");
     }
 
+    private async Task getAustinCord()
+    {
+        cordinates = "30.266666,-97.733330";
+        forecasts = await Http.GetFromJsonAsync<WeatherForecast[]>($"api/WeatherForecast/get/{cordinates}");
+    }
 }

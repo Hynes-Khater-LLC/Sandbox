@@ -12,7 +12,7 @@ using System.Net.Http;
 namespace sample_app.Server.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]/[action]")]
     public class WeatherForecastController : ControllerBase
     {
         private readonly ILogger<WeatherForecastController> _logger;
@@ -22,18 +22,18 @@ namespace sample_app.Server.Controllers
             _logger = logger;
         }
 
-        [HttpGet]
-        public async Task<IEnumerable<Shared.WeatherForecast>> GetAsync()
+        [HttpGet("{cordinates}")]
+        public async Task<IEnumerable<Shared.WeatherForecast>> GetAsync(string cordinates)
         {
             try
             {
 
 
-                sampleApi.Client client = new sampleApi.Client("http://localhost:5000", new HttpClient());
+                sampleApi.Client client = new sampleApi.Client("http://localhost:53540", new HttpClient());
 
                 ICollection<sampleApi.WeatherForecast> forecasts = null;
 
-                forecasts = await client.WeatherForecastAsync();
+                forecasts = await client.WeatherForecastAsync(cordinates);
 
 
                 List<Shared.WeatherForecast> retCollection = new List<Shared.WeatherForecast>();
